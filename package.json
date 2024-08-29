@@ -11,8 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nunjucks": "3.2.4",
-    "@11ty/eleventy": "2.0.1"
-
+    "@11ty/eleventy": "2.0.1",
+    "nunjucks": "3.2.4"
   }
 }
