@@ -1,0 +1,270 @@
+{% extends "index.njk" %}
+
+{% block content %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #results {
+            display: none; /* Initially hide the results */
+        }
+        .result-item {
+            margin: 5px 0;
+        }
+        .text-blue {
+            color: blue;
+        }
+        .text-red {
+            color: red;
+        }
+    </style>
+
+    <div id="intro" class="card" style="width: 24rem;">
+      <div class="card-body">
+        <p class="card-text">
+            The Modified Early Warning Score (MEWS) uses physiological parameters to
+            identify patients that are at increased risk of catastrophic deterioration, 
+            resulting in ICU admission or death.
+        </p>
+        <p class="card-text">
+            The Modified Early Warning Score was first proposed by Stenhouse et al.1. 
+            They took an existing Early Warning Score and added a urine output parameter 
+            (no urine output = 3 points, <0.5 ml/kg/hr = 2 points) 
+            in addition to modifying the scale.
+        </p>
+      </div>
+    </div>
+
+    <div class="card mb-3" id="results" style="width: 24rem;">
+        <div class="card-body">
+            <p class="card-text">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td id="systolicBPResult" class="text-blue">Score for Systolic BP:</td>
+                        </tr>
+                        <tr>
+                            <td id="heartRateResult" class="text-blue">Score for Heart Rate:</td>
+                        </tr>
+                        <tr>
+                            <td id="respiratoryRateResult" class="text-blue">Score for Respiratory Rate:</td>
+                        </tr>
+                        <tr>
+                            <td id="tempResult" class="text-blue">Score for Temperature:</td>
+                        </tr>
+                        <tr>
+                            <td id="avpuResult" class="text-blue">Score for AVPU:</td>
+                        </tr>
+                        <tr>
+                            <td id="urineOutputResult" class="text-blue">Score for Urine Output:</td>
+                        </tr>
+                        <tr>
+                            <td id="oxygenSaturationResult" class="text-blue">Score for Oxygen Saturation:</td>
+                        </tr>
+                        <tr>
+                            <td id="totalScore" class="text-red">Total Score:</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="evaluationForm">
+            <div class="form-group">
+                <label for="systolicBP">Systolic Blood Pressure:</label>
+                <input type="number" id="systolicBP" name="systolicBP" class="form-control" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="heartRate">Heart Rate (Pulse):</label>
+                <input type="number" id="heartRate" name="heartRate" class="form-control" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="respiratoryRate">Respiratory Rate:</label>
+                <input type="number" id="respiratoryRate" name="respiratoryRate" class="form-control" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperature:</label>
+                <input type="number" id="temperature" name="temperature" class="form-control" step="any" required>
+            </div>
+            <div class="form-group">
+                <label for="avpuScore">AVPU Score:</label>
+                <select id="avpuScore" name="avpuScore" class="form-control" required>
+                    <option value="0">Alert</option>
+                    <option value="1">Reacts to voice</option>
+                    <option value="2">Reacts to pain</option>
+                    <option value="3">Unresponsive</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="urineOutput">Urine Output:</label>
+                <select id="urineOutput" name="urineOutput" class="form-control" required>
+                    <option value="3">No urine output</option>
+                    <option value="2">20ml/hr or has not voided within 4 hours of admission</option>
+                    <option value="1">20-50 ml/hr (over 2 hour period)</option>
+                    <option value="0">> 50 ml/hr (over 2 hour period)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="oxygenSaturation">Oxygen Saturation:</label>
+                <input type="number" id="oxygenSaturation" name="oxygenSaturation" class="form-control" step="any" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Evaluate</button>
+        </form>
+    </div>
+
+    <script>
+        function evaluateSystolicBP(value) {
+            if (typeof value !== 'number' || isNaN(value)) {
+                return 0; // Return 0 points for invalid input
+            }
+            if (value <= 70) {
+                return 3;
+            } else if (value >= 71 && value <= 80) {
+                return 2;
+            } else if (value >= 81 && value <= 100) {
+                return 1;
+            } else if (value >= 101 && value <= 199) {
+                return 0;
+            } else if (value >= 200) {
+                return 2;
+            } else {
+                return 0; // Default to 0 points for values out of range
+            }
+        }
+
+        function evaluateHeartRate(rate) {
+            if (typeof rate !== 'number' || isNaN(rate)) {
+                return 0; // Return 0 points for invalid input
+            }
+            if (rate <= 40) {
+                return 3;
+            } else if (rate >= 41 && rate <= 50) {
+                return 2;
+            } else if (rate >= 51 && rate <= 100) {
+                return 1;
+            } else if (rate >= 101 && rate <= 110) {
+                return 0;
+            } else if (rate >= 111 && rate <= 129) {
+                return 1;
+            } else if (rate > 129) {
+                return 2;
+            } else {
+                return 0; // Default to 0 points for values out of range
+            }
+        }
+
+        function evaluateRespiratoryRate(rate) {
+            if (typeof rate !== 'number' || isNaN(rate)) {
+                return 0; // Return 0 points for invalid input
+            }
+            if (rate <= 8) {
+                return 3;
+            } else if (rate >= 9 && rate <= 14) {
+                return 2;
+            } else if (rate >= 15 && rate <= 20) {
+                return 1;
+            } else if (rate >= 21 && rate <= 29) {
+                return 0;
+            } else if (rate > 29) {
+                return 2;
+            } else {
+                return 0; // Default to 0 points for values out of range
+            }
+        }
+
+        function evaluateTemp(value) {
+            if (typeof value !== 'number' || isNaN(value)) {
+                return 0; // Return 0 points for invalid input
+            }
+            if (value <= 35) {
+                return 3;
+            } else if (value > 35 && value <= 36) {
+                return 2;
+            } else if (value > 36 && value <= 38) {
+                return 1;
+            } else if (value > 38 && value <= 38.5) {
+                return 0;
+            } else if (value > 38.5) {
+                return 2;
+            } else {
+                return 0; // Default to 0 points for values out of range
+            }
+        }
+
+        function evaluateAVPU(score) {
+            switch (score) {
+                case '0': return 0; // Alert
+                case '1': return 1; // Reacts to voice
+                case '2': return 2; // Reacts to pain
+                case '3': return 3; // Unresponsive
+                default: return 0; // Default to 0 points for invalid input
+            }
+        }
+
+        function evaluateUrineOutput(output) {
+            switch (output) {
+                case '3': return 3; // No urine output
+                case '2': return 2; // 20ml/hr or has not voided within 4 hours of admission
+                case '1': return 1; // 20-50 ml/hr (over 2 hour period)
+                case '0': return 0; // > 50 ml/hr (over 2 hour period)
+                default: return 0; // Default to 0 points for invalid input
+            }
+        }
+
+        function evaluateOxygenSaturation(value) {
+            if (typeof value !== 'number' || isNaN(value)) {
+                return 0; // Return 0 points for invalid input
+            }
+            if (value <= 84) {
+                return 3;
+            } else if (value >= 85 && value <= 89) {
+                return 2;
+            } else if (value >= 90 && value <= 94) {
+                return 1;
+            } else if (value >= 95 && value <= 100) {
+                return 0;
+            } else {
+                return 0; // Default to 0 points for values out of range
+            }
+        }
+
+        document.getElementById('evaluationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            var systolicBP = parseFloat(document.getElementById('systolicBP').value);
+            var heartRate = parseFloat(document.getElementById('heartRate').value);
+            var respiratoryRate = parseFloat(document.getElementById('respiratoryRate').value);
+            var temperature = parseFloat(document.getElementById('temperature').value);
+            var avpuScore = document.getElementById('avpuScore').value;
+            var urineOutput = document.getElementById('urineOutput').value;
+            var oxygenSaturation = parseFloat(document.getElementById('oxygenSaturation').value);
+
+            var systolicBPResult = evaluateSystolicBP(systolicBP);
+            var heartRateResult = evaluateHeartRate(heartRate);
+            var respiratoryRateResult = evaluateRespiratoryRate(respiratoryRate);
+            var tempResult = evaluateTemp(temperature);
+            var avpuResult = evaluateAVPU(avpuScore);
+            var urineOutputResult = evaluateUrineOutput(urineOutput);
+            var oxygenSaturationResult = evaluateOxygenSaturation(oxygenSaturation);
+
+            var totalScore = systolicBPResult + heartRateResult + respiratoryRateResult + tempResult + avpuResult + urineOutputResult + oxygenSaturationResult;
+
+            document.getElementById('systolicBPResult').textContent = 'Score for Systolic BP: ' + systolicBPResult + ' points';
+            document.getElementById('heartRateResult').textContent = 'Score for Heart Rate: ' + heartRateResult + ' points';
+            document.getElementById('respiratoryRateResult').textContent = 'Score for Respiratory Rate: ' + respiratoryRateResult + ' points';
+            document.getElementById('tempResult').textContent = 'Score for Temperature: ' + tempResult + ' points';
+            document.getElementById('avpuResult').textContent = 'Score for AVPU: ' + avpuResult + ' points';
+            document.getElementById('urineOutputResult').textContent = 'Score for Urine Output: ' + urineOutputResult + ' points';
+            document.getElementById('oxygenSaturationResult').textContent = 'Score for Oxygen Saturation: ' + oxygenSaturationResult + ' points';
+            document.getElementById('totalScore').textContent = 'Total Score: ' + totalScore + ' points';
+
+            document.getElementById('results').style.display = 'block'; // Show the results
+            document.getElementById('intro').style.display = 'none'; // Hide the intro card
+        });
+    </script>
+
+{% endblock %}
