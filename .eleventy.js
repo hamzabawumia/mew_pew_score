@@ -8,7 +8,8 @@ module.exports = function(eleventyConfig) {
   return {
     dir: {
       input: "mew_score", // Source directory
-      output: "mew_score/_site" // Build output directory
+      output: "mew_score/_site", // Build output directory
+      layouts: '..',
     }
   };
 };
