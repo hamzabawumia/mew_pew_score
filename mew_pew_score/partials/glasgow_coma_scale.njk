@@ -1,11 +1,132 @@
-
 {% extends "index.njk" %}
 
 {% block content %}
 
-COMMING SOON ....
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #gcsResults {
+            display: none; /* Initially hide the results */
+        }
+        .result-item {
+            margin: 5px 0;
+        }
+        .text-blue {
+            color: blue;
+        }
+        .text-red {
+            color: red;
+        }
+    </style>
 
+    <div id="gcsIntro" class="card" style="width: 18rem;">
+        <div class="card-body">
+            <p class="card-text">
+                The Glasgow Coma Scale (GCS) assesses a patient's level of consciousness based on eye, verbal, and motor responses.
+            </p>
+        </div>
+    </div>
 
+    <div class="card mb-3" id="gcsResults" style="width: 24rem;">
+        <div class="card-body">
+            <p class="card-text">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <td id="eyeResponseResult" class="text-blue">Score for Eye Response:</td>
+                        </tr>
+                        <tr>
+                            <td id="verbalResponseResult" class="text-blue">Score for Verbal Response:</td>
+                        </tr>
+                        <tr>
+                            <td id="motorActivityResult" class="text-blue">Score for Motor Activity:</td>
+                        </tr>
+                        <tr>
+                            <td id="gcsTotalScore" class="text-red">Total GCS Score:</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>Higher score indicates a better level of consciousness:</b>
+                                <hr>
+                                <b>3-8</b> Severe impairment. <br>
+                                <b>9-12</b> Moderate impairment. <br>
+                                <b>13-15</b> Mild impairment. <br>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <form id="gcsForm">
+            <div class="form-group">
+                <label for="eyeResponse">Eye Response:</label>
+                <select id="eyeResponse" name="eyeResponse" class="form-control" required>
+                    <option value="1">No eye opening. - 1 point</option>
+                    <option value="2">Opens eyes in response to painful stimuli. - 2 points</option>
+                    <option value="3">Opens eyes in response to voice. - 3 points</option>
+                    <option value="4">Opens eyes spontaneously. - 4 points</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="verbalResponse">Verbal Response:</label>
+                <select id="verbalResponse" name="verbalResponse" class="form-control" required>
+                    <option value="1">Makes no sounds. - 1 point</option>
+                    <option value="2">Incomprehensible sounds. - 2 points</option>
+                    <option value="3">Utters incoherent words. - 3 points</option>
+                    <option value="4">Confused, disoriented. - 4 points</option>
+                    <option value="5">Oriented, converses normally. - 5 points</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="motorActivity">Motor Activity:</label>
+                <select id="motorActivity" name="motorActivity" class="form-control" required>
+                    <option value="1">Makes no movements. - 1 point</option>
+                    <option value="2">Decerebrate (extensor) posture. - 2 points</option>
+                    <option value="3">Decorticate (flexor) posture. - 3 points</option>
+                    <option value="4">Withdrawal from painful stimuli. - 4 points</option>
+                    <option value="5">Localizes to painful stimuli. - 5 points</option>
+                    <option value="6">Obeys commands. - 6 points</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Evaluate</button>
+        </form>
+    </div>
+
+    <script>
+        function evaluateGCS(eyeResponse, verbalResponse, motorActivity) {
+            // Sum the points for GCS
+            return parseInt(eyeResponse) + parseInt(verbalResponse) + parseInt(motorActivity);
+        }
+
+        document.getElementById('gcsForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            // GCS inputs
+            var eyeResponse = document.getElementById('eyeResponse').value;
+            var verbalResponse = document.getElementById('verbalResponse').value;
+            var motorActivity = document.getElementById('motorActivity').value;
+
+            // Calculate GCS score
+            var gcsScore = evaluateGCS(eyeResponse, verbalResponse, motorActivity);
+
+            // Display GCS results
+            document.getElementById('eyeResponseResult').textContent = 'Score for Eye Response: ' + eyeResponse + ' points';
+            document.getElementById('verbalResponseResult').textContent = 'Score for Verbal Response: ' + verbalResponse + ' points';
+            document.getElementById('motorActivityResult').textContent = 'Score for Motor Activity: ' + motorActivity + ' points';
+            document.getElementById('gcsTotalScore').textContent = 'Total GCS Score: ' + gcsScore + ' points';
+
+            document.getElementById('gcsResults').style.display = 'block'; // Show the results
+            document.getElementById('gcsIntro').style.display = 'none'; // Hide the intro card
+        });
+    </script>
 
 {% endblock %}
 
