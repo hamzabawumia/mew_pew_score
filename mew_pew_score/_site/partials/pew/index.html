@@ -246,8 +246,8 @@
             </div>
 
             <div class="form-group">
-                <label for="bloodPressure">Blood Pressure:</label>
-                <input type="number" id="bloodPressure" name="bloodPressure" class="form-control" step="any" required>
+                <label for="systolicBP">Systolic Blood Pressure:</label>
+                <input type="number" id="systolicBP" name="systolicBP" class="form-control" step="any" required>
             </div>
 
             <div class="form-group">
@@ -300,16 +300,16 @@
             }
         }
 
-        function evaluateBloodPressure(bp) {
+        function evaluateSystolicBP(bp) {
             if (typeof bp !== 'number' || isNaN(bp)) {
                 return 0; // Return 0 points for invalid input
             }
-            if (bp < 60) {
-                return 3;
-            } else if (bp >= 60 && bp <= 90) {
-                return 1;
+            if (bp < 70) {
+                return 3; // Severe hypotension
+            } else if (bp >= 70 && bp <= 90) {
+                return 1; // Mild hypotension
             } else if (bp > 90) {
-                return 2;
+                return 0; // Normal or high
             } else {
                 return 0; // Default to 0 points for values out of range
             }
@@ -346,23 +346,23 @@
             // PEWS inputs
             var respiratoryRate = parseFloat(document.getElementById('respiratoryRate').value);
             var heartRate = parseFloat(document.getElementById('heartRate').value);
-            var bloodPressure = parseFloat(document.getElementById('bloodPressure').value);
+            var systolicBP = parseFloat(document.getElementById('systolicBP').value);
             var temperature = parseFloat(document.getElementById('temperature').value);
             var consciousness = document.getElementById('consciousness').value;
 
             // Calculate PEWS scores
             var respiratoryRateResult = evaluateRespiratoryRate(respiratoryRate);
             var heartRateResult = evaluateHeartRate(heartRate);
-            var bloodPressureResult = evaluateBloodPressure(bloodPressure);
+            var systolicBPResult = evaluateSystolicBP(systolicBP);
             var temperatureResult = evaluateTemperature(temperature);
             var consciousnessResult = evaluateConsciousness(consciousness);
 
-            var totalScore = respiratoryRateResult + heartRateResult + bloodPressureResult + temperatureResult + consciousnessResult;
+            var totalScore = respiratoryRateResult + heartRateResult + systolicBPResult + temperatureResult + consciousnessResult;
 
             // Display PEWS results
             document.getElementById('respiratoryRateResult').textContent = 'Score for Respiratory Rate: ' + respiratoryRateResult + ' points';
             document.getElementById('heartRateResult').textContent = 'Score for Heart Rate: ' + heartRateResult + ' points';
-            document.getElementById('bloodPressureResult').textContent = 'Score for Blood Pressure: ' + bloodPressureResult + ' points';
+            document.getElementById('bloodPressureResult').textContent = 'Score for Systolic Blood Pressure: ' + systolicBPResult + ' points';
             document.getElementById('temperatureResult').textContent = 'Score for Temperature: ' + temperatureResult + ' points';
             document.getElementById('consciousnessResult').textContent = 'Score for Level of Consciousness: ' + consciousnessResult + ' points';
             document.getElementById('pewsTotalScore').textContent = 'Total PEWS Score: ' + totalScore + ' points';
